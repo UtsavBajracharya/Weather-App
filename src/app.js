@@ -9,7 +9,7 @@ const weatherData = require("../utils/weatherData");
 const { title } = require("process");
 
 // Let express know the file and folder paths
-const publicPath = path.join(__dirname, "..public");
+const publicPath = path.join(__dirname, "../public");
 const viewsPath = path.join(__dirname, "../templates/views");
 const partialsPath = path.join(__dirname, "../templates/partials");
 
