@@ -64,14 +64,41 @@ function showData(city) {
   getWeatherData(city, (result) => {
     console.log(result);
     if (result.cod == 200) {
-      if (
-        result.weather[0].description == "rain" ||
-        result.weather[0].description == "fog"
-      ) {
-        weatherIcon.className = "wi wi-day-" + result.description;
-      } else {
-        weatherIcon.className = "wi wi-day-cloudy";
+      const description = result.weather[0].description.toLowerCase();
+      const mainWeather = result.weather[0].main.toLowerCase();
+
+      // Mapping weather conditions to corresponding icon classes
+      switch (mainWeather) {
+        case "clear":
+          weatherIcon.className = "wi wi-day-sunny";
+          break;
+        case "clouds":
+          weatherIcon.className = "wi wi-day-cloudy";
+          break;
+        case "rain":
+          weatherIcon.className = "wi wi-day-rain";
+          break;
+        case "drizzle":
+          weatherIcon.className = "wi wi-day-sprinkle";
+          break;
+        case "thunderstorm":
+          weatherIcon.className = "wi wi-day-thunderstorm";
+          break;
+        case "snow":
+          weatherIcon.className = "wi wi-day-snow";
+          break;
+        case "fog":
+        case "mist":
+          weatherIcon.className = "wi wi-day-fog";
+          break;
+        case "haze":
+          weatherIcon.className = "wi wi-day-haze";
+          break;
+        default:
+          weatherIcon.className = "wi wi-day-cloudy";
+          break;
       }
+      
       locationElement.textContent = result?.name;
       tempElement.textContent =
         (result?.main?.temp - 273.5).toFixed(2) + String.fromCharCode(176);
