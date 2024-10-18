@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Clone the repository with credentials
+                git branch: 'master',
+                    url: 'https://github.com/UtsavBajracharya/Weather-App.git',
+                    credentialsId: 'd2af42dc-cd3e-445a-a8d8-50ead4e543d7'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                // Build the Docker image
+                bat '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker" build -t weather-app .'
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                // Run unit tests
+                bat 'npm test'
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                // Login to Docker Hub
+                withCredentials([usernamePassword(credentialsId: 'd2af42dc-cd3e-445a-a8d8-50ead4e543d7', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    bat '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker" login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%'
+                }
+                
+                // Push the Docker image to a container registry
+                bat '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker" tag weather-app utsavbajracharya/weather-app:latest'
+                bat '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker" push utsavbajracharya/weather-app:latest'
+            }
+        }
+    }
+}
